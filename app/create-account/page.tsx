@@ -34,8 +34,8 @@ export default function CreateAccount() {
           name="password"
           type="password"
           placeholder="Password"
-          minLength={PASSWORD_MIN_LENGTH}
           required
+          minLength={PASSWORD_MIN_LENGTH}
           errors={state?.fieldErrors.password}
         />
         <Input
