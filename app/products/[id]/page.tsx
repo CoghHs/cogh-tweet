@@ -5,6 +5,7 @@ import { UserIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { title } from "process";
 
 async function getIsOwner(userId: number) {
   const session = await getSession();
@@ -29,6 +30,13 @@ async function getProduct(id: number) {
     },
   });
   return product;
+}
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const product = await getProduct(Number(params.id));
+  return {
+    title: product?.title,
+  };
 }
 
 export default async function ProductDetail({
