@@ -3,27 +3,25 @@
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
-import { productSchema } from "./schema";
+import { tweetSchema } from "./schema";
 
-export async function uploadProduct(formData: FormData) {
+export async function uploadTweet(formData: FormData) {
   const data = {
     photo: formData.get("photo"),
     title: formData.get("title"),
     description: formData.get("description"),
-    price: formData.get("price"),
   };
 
-  const result = productSchema.safeParse(data);
+  const result = tweetSchema.safeParse(data);
   if (!result.success) {
     return result.error.flatten();
   } else {
     const session = await getSession();
     if (session.id) {
-      const product = await db.product.create({
+      const tweet = await db.tweet.create({
         data: {
           title: result.data.title,
           description: result.data.description,
-          price: result.data.price,
           photo: result.data.photo,
           user: {
             connect: {
@@ -35,7 +33,7 @@ export async function uploadProduct(formData: FormData) {
           id: true,
         },
       });
-      redirect(`/products/${product.id}`);
+      redirect(`/tweet/${tweet.id}`);
     }
   }
 }

@@ -1,5 +1,6 @@
 import db from "@/lib/db";
 import getSession from "@/lib/session";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 async function getUser() {
@@ -26,11 +27,12 @@ export default async function Profile() {
     redirect("/");
   };
   return (
-    <div>
+    <div className="py-12">
       <h1>Welcome! {user?.username}</h1>
       <form action={logOut}>
         <button>Log out</button>
       </form>
+      <Link href="">Edit</Link>
     </div>
   );
 }

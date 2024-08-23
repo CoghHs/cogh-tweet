@@ -2,11 +2,10 @@
 
 import db from "@/lib/db";
 
-export async function getMoreProducts(page: number) {
-  const products = await db.product.findMany({
+export async function getMoreTweets(page: number) {
+  const tweet = await db.tweet.findMany({
     select: {
       title: true,
-      price: true,
       created_at: true,
       photo: true,
       id: true,
@@ -17,5 +16,5 @@ export async function getMoreProducts(page: number) {
       created_at: "asc",
     },
   });
-  return products;
+  return tweet;
 }

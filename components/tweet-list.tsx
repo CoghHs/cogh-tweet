@@ -1,16 +1,18 @@
 "use client";
 
-import { InitialProducts } from "@/app/(tabs)/products/page";
-import ListProduct from "./list-product";
+import ListProduct from "./list-tweet";
 import { useEffect, useRef, useState } from "react";
-import { getMoreProducts } from "@/app/(tabs)/products/actions";
 
-interface ProductListProps {
-  initialProducts: InitialProducts;
+import ListTweet from "./list-tweet";
+import { InitialTweets } from "@/app/(tabs)/tweets/page";
+import { getMoreTweets } from "@/app/(tabs)/tweets/actions";
+
+interface TweetListProps {
+  initialTweets: InitialTweets;
 }
 
-export default function ProductList({ initialProducts }: ProductListProps) {
-  const [products, setProducts] = useState(initialProducts);
+export default function TweetList({ initialTweets }: TweetListProps) {
+  const [tweets, setTweets] = useState(initialTweets);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [isLastPage, setIsLastPage] = useState(false);
@@ -25,9 +27,9 @@ export default function ProductList({ initialProducts }: ProductListProps) {
         if (element.isIntersecting && trigger.current) {
           observer.unobserve(trigger.current);
           setIsLoading(true);
-          const newProducts = await getMoreProducts(page + 1);
+          const newProducts = await getMoreTweets(page + 1);
           if (newProducts.length !== 0) {
-            setProducts((prev) => [...prev, ...newProducts]);
+            setTweets((prev) => [...prev, ...newProducts]);
             setPage((prev) => prev + 1);
           } else {
             setIsLastPage(true);
@@ -50,8 +52,8 @@ export default function ProductList({ initialProducts }: ProductListProps) {
   }, [page]);
   return (
     <div className="p-5 flex flex-col gap-5">
-      {products.map((product) => (
-        <ListProduct key={product.id} {...product} />
+      {tweets.map((tweet) => (
+        <ListTweet key={tweet.id} {...tweet} />
       ))}
       {/* {!isLastPage ? (
         <span

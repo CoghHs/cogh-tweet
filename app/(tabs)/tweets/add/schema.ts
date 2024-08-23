@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const productSchema = z.object({
+export const tweetSchema = z.object({
   photo: z.string({
     required_error: "사진은 필수입니다.",
   }),
@@ -10,7 +10,6 @@ export const productSchema = z.object({
   description: z.string({
     required_error: "설명은 필수입니다.",
   }),
-  price: z.coerce.number(),
 });
 
-export type ProductType = z.infer<typeof productSchema>;
+export type TweetType = z.infer<typeof tweetSchema>;

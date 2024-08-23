@@ -6,6 +6,8 @@ import {
   ChatBubbleOvalLeftEllipsisIcon as SolidChatIcon,
   VideoCameraIcon as SolidVideoIcon,
   UserIcon as SolidUserIcon,
+  PlusIcon,
+  MagnifyingGlassIcon as SolidSearchIcon,
 } from "@heroicons/react/24/solid";
 import {
   HomeIcon as OutlineHomeIcon,
@@ -13,48 +15,44 @@ import {
   ChatBubbleOvalLeftEllipsisIcon as OutlineChatIcon,
   VideoCameraIcon as OutlineVideoIcon,
   UserIcon as OutlineUserIcon,
+  MagnifyingGlassIcon as OutlineSearchIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function TabBar() {
+export default function TabBar({ username }: { username: string }) {
   const pathname = usePathname();
   return (
-    <div className="fixed bottom-0 w-full max-w-screen-sm mx-auto grid grid-cols-5 border-neutral-600 border-t px-5 py-3 *:text-white bg-neutral-800">
-      <Link href="/products" className="flex flex-col items-center gap-px">
-        {pathname === "/products" ? (
+    <div className="fixed left-0 top-0 w-full flex justify-between px-16 py-3 *:text-black bg-white ">
+      <Link href="/tweets" className="flex flex-col items-center gap-px">
+        {pathname === "/tweets" ? (
           <SolidHomeIcon className="w-7 h-7" />
         ) : (
           <OutlineHomeIcon className="w-7 h-7" />
         )}
         <span>홈</span>
       </Link>
-      <Link href="/life" className="flex flex-col items-center gap-px">
-        {pathname === "/life" ? (
-          <SolidNewspaperIcon className="w-7 h-7" />
+      <Link href="/tweets/add" className="flex flex-col items-center gap-px">
+        {pathname === "/tweets/add" ? (
+          <PlusIcon className="w-7 h-7" />
         ) : (
-          <OutlineNewspaperIcon className="w-7 h-7" />
+          <PlusIcon className="w-7 h-7" />
         )}
-        <span>동네생활</span>
+        <span>올리기</span>
       </Link>
-      <Link href="/chat" className="flex flex-col items-center gap-px">
-        {pathname === "/chat" ? (
-          <SolidChatIcon className="w-7 h-7" />
+      <Link href="/search">
+        {pathname === "/search" ? (
+          <SolidSearchIcon className="w-7 h-7" />
         ) : (
-          <OutlineChatIcon className="w-7 h-7" />
+          <OutlineSearchIcon className="w-7 h-7" />
         )}
-        <span>채팅</span>
+        <span>검색</span>
       </Link>
-      <Link href="/live" className="flex flex-col items-center gap-px">
-        {pathname === "/live" ? (
-          <SolidVideoIcon className="w-7 h-7" />
-        ) : (
-          <OutlineVideoIcon className="w-7 h-7" />
-        )}
-        <span>쇼핑</span>
-      </Link>
-      <Link href="/profile" className="flex flex-col items-center gap-px">
-        {pathname === "/profile" ? (
+      <Link
+        href={`/users/${username}`}
+        className="flex flex-col items-center gap-px"
+      >
+        {pathname === `/users/${username}` ? (
           <SolidUserIcon className="w-7 h-7" />
         ) : (
           <OutlineUserIcon className="w-7 h-7" />

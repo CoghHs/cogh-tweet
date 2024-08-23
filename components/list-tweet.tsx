@@ -1,24 +1,26 @@
-import { formatToTimeAgo, formatToWon } from "@/lib/utils";
+import { formatToTimeAgo } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-interface ListProductProps {
+interface ListTweetProps {
   title: string;
-  price: number;
   created_at: Date;
   photo: string;
   id: number;
+  user: {
+    username: string;
+    avator?: string | null;
+  };
 }
 
-export default function ListProduct({
+export default function ListTweet({
   title,
-  price,
   created_at,
   photo,
   id,
-}: ListProductProps) {
+}: ListTweetProps) {
   return (
-    <Link className="flex gap-5 items-center" href={`/products/${id}`}>
+    <Link className="flex gap-5 items-center" href={`/tweet/${id}`}>
       <div className="relative size-28 overflow-hidden rounded-md">
         <Image
           className="object-cover"
@@ -27,12 +29,11 @@ export default function ListProduct({
           alt={title}
         />
       </div>
-      <div className="flex flex-col gap-1 *:text-white">
+      <div className="flex flex-col gap-1 *:text-black">
         <span className="text-lg">{title}</span>
         <span className="text-sm text-neutral-500">
           {formatToTimeAgo(created_at.toString())}
         </span>
-        <span className="font-semibold text-lg">{formatToWon(price)}원</span>
       </div>
     </Link>
   );

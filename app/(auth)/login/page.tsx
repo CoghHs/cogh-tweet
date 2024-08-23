@@ -33,7 +33,6 @@ export default function LogIn() {
         />
         <FormButton text="Log in" />
       </form>
-      <SocialLogin />
     </div>
   );
 }

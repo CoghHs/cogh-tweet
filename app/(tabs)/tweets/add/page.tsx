@@ -4,12 +4,12 @@ import Button from "@/components/button";
 import Input from "@/components/input";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
-import { getUploadUrl, uploadProduct } from "./actions";
+import { getUploadUrl, uploadTweet } from "./actions";
 import { z } from "zod";
 import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { productSchema, ProductType } from "./schema";
+import { tweetSchema, TweetType } from "./schema";
 
 const fileSchema = z.object({
   type: z.string().refine((value) => value.includes("image"), {
@@ -20,7 +20,7 @@ const fileSchema = z.object({
   }),
 });
 
-export default function AddProduct() {
+export default function AddTweet() {
   const [preview, setPreview] = useState("");
   const [uploadUrl, setUploadUrl] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -29,8 +29,8 @@ export default function AddProduct() {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<ProductType>({
-    resolver: zodResolver(productSchema),
+  } = useForm<TweetType>({
+    resolver: zodResolver(tweetSchema),
   });
 
   const onImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +63,7 @@ export default function AddProduct() {
       );
     }
   };
-  const onSubmit = handleSubmit(async (data: ProductType) => {
+  const onSubmit = handleSubmit(async (data: TweetType) => {
     if (!file) {
       return;
     }
@@ -78,10 +78,9 @@ export default function AddProduct() {
     }
     const formData = new FormData();
     formData.append("title", data.title);
-    formData.append("price", data.price + "");
     formData.append("description", data.description);
     formData.append("photo", data.photo);
-    return uploadProduct(formData);
+    return uploadTweet(formData);
   });
   const onValid = async () => {
     await onSubmit();
@@ -121,13 +120,6 @@ export default function AddProduct() {
           placeholder="제목"
           type="text"
           errors={[errors.title?.message ?? ""]}
-        />
-        <Input
-          {...register("price")}
-          required
-          placeholder="가격"
-          type="number"
-          errors={[errors.price?.message ?? ""]}
         />
         <Input
           {...register("description")}
