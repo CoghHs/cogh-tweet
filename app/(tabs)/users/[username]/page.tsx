@@ -17,7 +17,7 @@ export default async function User({
       <div className="flex flex-col justify-center items-center gap-3">
         {user?.avatar ? (
           <Image
-            src={`${user?.avatar}/avatar`}
+            src={`${user?.avatar}/bigavatar`}
             alt="avatar"
             width={128}
             height={128}

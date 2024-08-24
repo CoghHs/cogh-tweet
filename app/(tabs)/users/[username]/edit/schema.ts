@@ -9,7 +9,7 @@ export const profileSchema = z.object({
     .string()
     .min(6, "Password must be at least 6 characters long")
     .optional(),
-  avatar: z.instanceof(File).optional(), // Optional file input
+  avatar: z.instanceof(File).optional(),
 });
 
 // 파일 업로드에 대한 스키마 (이미지 파일만 허용)

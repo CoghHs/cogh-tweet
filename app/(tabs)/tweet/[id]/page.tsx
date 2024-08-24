@@ -2,122 +2,72 @@ import LikeButton from "@/components/like-button";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { UserIcon } from "@heroicons/react/24/solid";
-import { unstable_cache as nextCache, revalidateTag } from "next/cache";
+import { unstable_cache as nextCache } from "next/cache";
 import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
 
 async function getIsOwner(userId: number) {
   const session = await getSession();
-  if (session.id) {
-    return session.id === userId;
-  }
-  return false;
+  return session?.id === userId;
 }
 
 async function getTweet(id: number) {
-  const tweet = await db.tweet.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      user: {
-        select: {
-          username: true,
-          avatar: true,
-        },
-      },
-    },
-  });
-  return tweet;
-}
-
-const getCachedTweet = nextCache(getTweet, ["product-datail"], {
-  tags: ["product-detail", "xxxx"],
-});
-
-async function getTweetTitle(id: number) {
-  const tweet = await db.tweet.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      title: true,
-    },
-  });
-  return tweet;
-}
-
-const getCachedTweetTitle = nextCache(getTweetTitle, ["product-title"], {
-  tags: ["product-title", "xxxx"],
-});
-
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const product = await getCachedTweetTitle(Number(params.id));
-  return {
-    title: product?.title,
-  };
-}
-
-async function getTweets(id: number) {
   try {
-    const tweets = await db.tweet.update({
+    const tweet = await db.tweet.findUnique({
       where: {
         id,
       },
-      data: {
-        views: {
-          increment: 1,
-        },
-      },
-      include: {
+      select: {
+        id: true,
+        created_at: true,
+        updated_at: true,
+        description: true,
+        title: true,
+        photo: true,
+        likes: true,
         user: {
           select: {
+            id: true,
             username: true,
             avatar: true,
           },
         },
-        _count: {
-          select: {
-            comments: true,
-          },
-        },
       },
     });
-    return tweets;
-  } catch (e) {
-    return null;
-  }
+    return tweet;
+  } catch (e) {}
 }
-
-const getCachedTweets = nextCache(getTweets, ["post-detail"], {
-  tags: ["post-detail"],
-  revalidate: 60,
-});
 
 async function getLikeStatus(tweetId: number, userId: number) {
   const isLiked = await db.like.findUnique({
-    where: {
-      id: {
-        tweetId,
-        userId: userId,
-      },
-    },
+    where: { id: { tweetId, userId } },
   });
-  const likeCount = await db.like.count({
-    where: {
-      tweetId,
-    },
-  });
+  const likeCount = await db.like.count({ where: { tweetId } });
   return { likeCount, isLiked: Boolean(isLiked) };
 }
 
-async function getCachedLikeStatus(tweetId: number) {
+async function getCachedLikeStatus(postId: number) {
   const session = await getSession();
   const userId = session.id;
   const cachedOperation = nextCache(getLikeStatus, ["product-like-status"], {
-    tags: [`like-status-${tweetId}`],
+    tags: [`like-status-${postId}`],
   });
-  return cachedOperation(tweetId, userId!);
+  return cachedOperation(postId, userId!);
+}
+
+async function getTweetTitle(id: number) {
+  const tweet = await db.tweet.findUnique({
+    where: { id },
+    select: { title: true },
+  });
+  return tweet;
+}
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const tweet = await getTweetTitle(Number(params.id));
+  return {
+    title: tweet?.title,
+  };
 }
 
 export default async function TweetDetail({
@@ -129,42 +79,37 @@ export default async function TweetDetail({
   if (isNaN(id)) {
     return notFound();
   }
-  const tweet = await getCachedTweet(id);
+
+  const tweet = await getTweet(id);
   if (!tweet) {
     return notFound();
   }
-  const tweets = await getCachedTweets(id);
-  if (!tweets) {
-    return notFound();
-  }
+
+  const isOwner = await getIsOwner(tweet.user.id);
   const { likeCount, isLiked } = await getCachedLikeStatus(id);
-  const isOwner = await getIsOwner(tweet.userId);
+
   const onDelete = async () => {
     "use server";
     if (!isOwner) return;
-    await db.tweet.delete({
-      where: {
-        id,
-      },
-      select: null,
-    });
+    await db.tweet.delete({ where: { id } });
     redirect("/tweets");
   };
+
   return (
     <div className="flex flex-col">
       <div className="relative aspect-square">
         <Image
           className="object-cover"
           fill
-          src={`${tweet.photo}/public`}
+          src={`${tweet.photo}/home`}
           alt={tweet.title}
         />
       </div>
       <div className="p-5 flex items-center gap-3 border-b border-neutral-700">
         <div className="size-10 overflow-hidden rounded-full ">
-          {tweet.user.avatar !== null ? (
+          {tweet.user.avatar ? (
             <Image
-              src={`${tweet.user.avatar}/avatar`}
+              src={`${tweet.user.avatar}/bigavatar`}
               width={40}
               height={40}
               alt={tweet.user.username}
@@ -180,7 +125,6 @@ export default async function TweetDetail({
       <div className="p-5">
         <h1 className="text-2xl font-semibold">{tweet.title}</h1>
         <p>{tweet.description}</p>
-        <span>조회 {tweets.views}</span>
       </div>
       <div className=" p-5 pb-10 flex justify-between items-center">
         {isOwner ? (
@@ -193,17 +137,7 @@ export default async function TweetDetail({
           </div>
         ) : null}
       </div>
+      <LikeButton isLiked={isLiked} likeCount={likeCount} tweetId={id} />
     </div>
   );
-}
-
-export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  const tweets = await db.tweet.findMany({
-    select: {
-      id: true,
-    },
-  });
-  return tweets.map((tweet) => ({ id: tweet.id + "" }));
 }

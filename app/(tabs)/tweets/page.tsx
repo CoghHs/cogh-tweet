@@ -40,9 +40,9 @@ export default async function Tweets() {
   return (
     <div>
       <TweetList initialTweets={initialTweets} />
-      <form action={revalidate}>
+      {/* <form action={revalidate}>
         <button>Revalidate</button>
-      </form>
+      </form> */}
     </div>
   );
 }

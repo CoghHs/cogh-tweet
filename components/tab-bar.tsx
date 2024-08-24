@@ -2,26 +2,35 @@
 
 import {
   HomeIcon as SolidHomeIcon,
-  NewspaperIcon as SolidNewspaperIcon,
-  ChatBubbleOvalLeftEllipsisIcon as SolidChatIcon,
-  VideoCameraIcon as SolidVideoIcon,
   UserIcon as SolidUserIcon,
   PlusIcon,
   MagnifyingGlassIcon as SolidSearchIcon,
 } from "@heroicons/react/24/solid";
 import {
   HomeIcon as OutlineHomeIcon,
-  NewspaperIcon as OutlineNewspaperIcon,
-  ChatBubbleOvalLeftEllipsisIcon as OutlineChatIcon,
-  VideoCameraIcon as OutlineVideoIcon,
   UserIcon as OutlineUserIcon,
   MagnifyingGlassIcon as OutlineSearchIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function TabBar({ username }: { username: string }) {
+  const [keyword, setKeyword] = useState("");
+  const router = useRouter();
   const pathname = usePathname();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (keyword) {
+      router.push(`/search?keyword=${encodeURIComponent(keyword)}`);
+    }
+  };
+
+  useEffect(() => {
+    setKeyword("");
+  }, [pathname]);
+
   return (
     <div className="fixed left-0 top-0 w-full flex justify-between px-16 py-3 *:text-black bg-white ">
       <Link href="/tweets" className="flex flex-col items-center gap-px">
@@ -40,14 +49,23 @@ export default function TabBar({ username }: { username: string }) {
         )}
         <span>올리기</span>
       </Link>
-      <Link href="/search">
-        {pathname === "/search" ? (
-          <SolidSearchIcon className="w-7 h-7" />
-        ) : (
-          <OutlineSearchIcon className="w-7 h-7" />
-        )}
-        <span>검색</span>
-      </Link>
+      <form onSubmit={handleSearch} className="flex items-center">
+        <input
+          type="text"
+          name="keyword"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          placeholder="검색"
+          className="px-4 py-2 border border-neutral-300 rounded-lg"
+        />
+        <button type="submit" className="ml-2">
+          {pathname === "/search" ? (
+            <SolidSearchIcon className="w-7 h-7" />
+          ) : (
+            <OutlineSearchIcon className="w-7 h-7" />
+          )}
+        </button>
+      </form>
       <Link
         href={`/users/${username}`}
         className="flex flex-col items-center gap-px"

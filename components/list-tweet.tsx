@@ -7,7 +7,7 @@ interface ListTweetProps {
   created_at: Date;
   photo: string;
   id: number;
-  user: {
+  user?: {
     username: string;
     avator?: string | null;
   };
@@ -25,7 +25,7 @@ export default function ListTweet({
         <Image
           className="object-cover"
           fill
-          src={`${photo}/avatar`}
+          src={`${photo}/home`}
           alt={title}
         />
       </div>
