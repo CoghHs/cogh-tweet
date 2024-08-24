@@ -1,9 +1,5 @@
 "use server";
-import {
-  PASSWORD_MIN_LENGTH,
-  PASSWORD_REGEX,
-  PASSWORD_REGEX_ERROR,
-} from "@/lib/constants";
+import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
 import db from "@/lib/db";
 import { z } from "zod";
 import bcrypt from "bcrypt";
@@ -27,14 +23,12 @@ const formSchema = z
       })
       .trim()
       .toLowerCase()
-      // .transform((username) => `🔥 ${username}`)
       .refine(
         (username) => !username.includes("potato"),
         "No potatoes allowed!"
       ),
     email: z.string().email().toLowerCase(),
     password: z.string().min(PASSWORD_MIN_LENGTH),
-    // .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
     confirm_password: z.string().min(4),
   })
   .superRefine(async ({ username }, ctx) => {

@@ -1,11 +1,6 @@
 "use server";
 
 import bcrypt from "bcrypt";
-import {
-  PASSWORD_MIN_LENGTH,
-  PASSWORD_REGEX,
-  PASSWORD_REGEX_ERROR,
-} from "@/lib/constants";
 import db from "@/lib/db";
 import { z } from "zod";
 import getSession from "@/lib/session";
@@ -32,8 +27,6 @@ const formSchema = z.object({
   password: z.string({
     required_error: "Password is required",
   }),
-  // .min(PASSWORD_MIN_LENGTH)
-  // .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
 });
 
 export async function login(prevState: any, formData: FormData) {
