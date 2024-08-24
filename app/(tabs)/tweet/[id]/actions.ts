@@ -1,5 +1,3 @@
-// app/(tabs)/tweet/[id]/actions.ts
-
 "use server";
 
 import db from "@/lib/db";

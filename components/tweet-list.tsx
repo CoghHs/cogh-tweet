@@ -1,6 +1,5 @@
 "use client";
 
-import ListProduct from "./list-tweet";
 import { useEffect, useRef, useState } from "react";
 
 import ListTweet from "./list-tweet";
