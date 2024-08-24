@@ -14,9 +14,7 @@ export default async function SearchResults({
   const results = await getSearchResults(keyword);
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">
-        Search Results for "{keyword}"
-      </h1>
+      <h1 className="text-2xl font-bold mb-4">Search Results for {keyword}</h1>
       <div>
         <SearchList initialTweets={results} keyword={keyword} />
       </div>
