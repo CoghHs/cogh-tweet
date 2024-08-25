@@ -1,10 +1,12 @@
-import LikeButton from "@/components/like-button";
-import db from "@/lib/db";
-import getSession from "@/lib/session";
+import { formatToTimeAgo } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
 import { UserIcon } from "@heroicons/react/24/solid";
 import { unstable_cache as nextCache } from "next/cache";
-import Image from "next/image";
+import db from "@/lib/db";
+import getSession from "@/lib/session";
 import { notFound, redirect } from "next/navigation";
+import LikeButton from "@/components/like-button";
 
 async function getIsOwner(userId: number) {
   const session = await getSession();
@@ -14,9 +16,7 @@ async function getIsOwner(userId: number) {
 async function getTweet(id: number) {
   try {
     const tweet = await db.tweet.findUnique({
-      where: {
-        id,
-      },
+      where: { id },
       select: {
         id: true,
         created_at: true,
@@ -24,7 +24,6 @@ async function getTweet(id: number) {
         description: true,
         title: true,
         photo: true,
-        views: true,
         likes: true,
         user: {
           select: {
@@ -36,7 +35,10 @@ async function getTweet(id: number) {
       },
     });
     return tweet;
-  } catch (e) {}
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 }
 
 async function getLikeStatus(tweetId: number, userId: number) {
@@ -97,49 +99,48 @@ export default async function TweetDetail({
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="relative aspect-square">
+    <div className="flex flex-col md:flex-row h-screen p-10 gap-5">
+      <div className="flex-1 relative">
         <Image
-          className="object-cover"
+          className="rounded-lg object-cover"
           fill
-          src={`${tweet.photo}/public`}
+          src={`${tweet.photo}/homenav`}
           alt={tweet.title}
         />
       </div>
-      <div className="p-5 flex items-center gap-3 border-b border-neutral-700">
-        <div className="size-10 overflow-hidden rounded-full ">
-          {tweet.user.avatar ? (
-            <Image
-              src={`${tweet.user.avatar}/bigavatar`}
-              width={40}
-              height={40}
-              alt={tweet.user.username}
-            />
-          ) : (
-            <UserIcon />
-          )}
+      <div className="flex-1 flex flex-col">
+        <div className="flex items-center gap-3 mb-5 border-b border-neutral-500 pb-3">
+          <div className="w-12 h-12 overflow-hidden rounded-full">
+            {tweet.user.avatar ? (
+              <Image
+                src={`${tweet.user.avatar}/bigavatar`}
+                width={48}
+                height={48}
+                alt={tweet.user.username}
+              />
+            ) : (
+              <UserIcon className="w-12 h-12 text-gray-500" />
+            )}
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold">{tweet.user.username}</h3>
+          </div>
         </div>
-        <div>
-          <h3>{tweet.user.username}</h3>
+        <div className="mb-5">
+          <h1 className="text-3xl font-semibold mb-2">{tweet.title}</h1>
+          <p className="text-gray-700 mb-2">{tweet.description}</p>
         </div>
-      </div>
-      <div className="p-5">
-        <h1 className="text-2xl font-semibold">{tweet.title}</h1>
-        <p>{tweet.description}</p>
-        <p>조회수 {tweet.views}</p>
-      </div>
-      <div className=" p-5 pb-10 flex justify-between items-center">
-        {isOwner ? (
-          <div className="flex gap-2">
+        <div className="flex justify-between items-center">
+          {isOwner && (
             <form action={onDelete}>
-              <button className="bg-red-500 rounded-md text-white font-semibold px-5 py-2.5">
+              <button className="bg-red-500 text-white rounded-md font-semibold px-5 py-2.5">
                 Delete tweet
               </button>
             </form>
-          </div>
-        ) : null}
+          )}
+          <LikeButton isLiked={isLiked} likeCount={likeCount} tweetId={id} />
+        </div>
       </div>
-      <LikeButton isLiked={isLiked} likeCount={likeCount} tweetId={id} />
     </div>
   );
 }

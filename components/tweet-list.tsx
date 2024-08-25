@@ -5,10 +5,19 @@ import { useEffect, useRef, useState } from "react";
 import ListTweet from "./list-tweet";
 import { InitialTweets } from "@/app/(tabs)/tweets/page";
 import { getMoreTweets } from "@/app/(tabs)/tweets/actions";
+import Masonry from "react-masonry-css";
 
 interface TweetListProps {
   initialTweets: InitialTweets;
 }
+
+const breakpoints = {
+  default: 5,
+  1100: 4,
+  700: 3,
+  500: 2,
+  300: 1,
+};
 
 export default function TweetList({ initialTweets }: TweetListProps) {
   const [tweets, setTweets] = useState(initialTweets);
@@ -50,18 +59,16 @@ export default function TweetList({ initialTweets }: TweetListProps) {
     };
   }, [page]);
   return (
-    <div className="p-5 flex flex-col gap-5">
-      {tweets.map((tweet) => (
-        <ListTweet key={tweet.id} {...tweet} />
-      ))}
-      {/* {!isLastPage ? (
-        <span
-          ref={trigger}
-          className=" text-sm font-semibold bg-orange-500 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 active:scale-95"
-        >
-          {isLoading ? "로딩 중" : "Load more"}
-        </span>
-      ) : null} caching 예제를 위한 비활성화 */}
+    <div className="p-5">
+      <Masonry
+        breakpointCols={breakpoints}
+        className="flex space-x-2 overflow-hidden"
+        columnClassName="masonry-column"
+      >
+        {tweets.map((tweet) => (
+          <ListTweet key={tweet.id} {...tweet} />
+        ))}
+      </Masonry>
     </div>
   );
 }
