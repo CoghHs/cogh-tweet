@@ -15,7 +15,7 @@ export default function LogIn() {
         <div className="bg-black size-5 rounded-full mb-5" />
         <h1 className="text-2xl text-neutral-700 font-semibold">안녕하세요!</h1>
         <h2 className="text-lg text-neutral-500">
-          Cogh에 오신 것을 환영합니다
+          Cogh에서 새로운 소식을 확인해보세요
         </h2>
       </div>
       <form action={dispatch} className="flex flex-col w-1/2 mx-auto gap-6">

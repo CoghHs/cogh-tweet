@@ -1,18 +1,17 @@
-import Image from "next/image";
+import {
+  AtSymbolIcon,
+  PaintBrushIcon,
+  RadioIcon,
+} from "@heroicons/react/24/solid";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center max-w-screen-sm h-1/2 mx-auto p-3 rounded-3xl shadow-2xl">
+    <div className="flex flex-col items-center justify-center max-w-screen-sm h-1/2 mx-auto p-10 rounded-3xl shadow-2xl">
       <div className="my-auto flex flex-col items-center gap-2 *:font-medium">
-        <Image
-          src="/coghprofile.jpg"
-          alt="Cogh Profile"
-          width={500}
-          height={500}
-          className="w-80 h-80"
-        />
-        <h2 className="text-3xl text-neutral-700 font-semibold">
+        <div className="bg-black size-5 rounded-full mb-5" />
+        <h1 className="font-serif mt-10 text-6xl">COGH</h1>
+        <h2 className="text-3xl text-neutral-700 mt-10 font-semibold">
           Cogh에 오신 것을 환영합니다
         </h2>
         <h2 className="text-lg text-neutral-500 mt-6">
