@@ -6,7 +6,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center max-w-screen-sm h-1/2 mx-auto p-3 rounded-3xl shadow-2xl">
       <div className="my-auto flex flex-col items-center gap-2 *:font-medium">
         <Image
-          src="/cogh.jpg"
+          src="/coghprofile.jpg"
           alt="Cogh Profile"
           width={500}
           height={500}
