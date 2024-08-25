@@ -28,13 +28,19 @@ export default async function User({
         )}
         <span className="text-4xl font-medium">{user?.username}</span>
         <span className="text-neutral-400">{user?.email}</span>
-        <span className="text-neutral-500 text-lg">{user?.bio}</span>
+        {user?.bio ? (
+          <span className="text-neutral-500 text-lg">{user?.bio}</span>
+        ) : (
+          <span className="text-neutral-500 text-lg">
+            자기소개를 추가해보세요 !
+          </span>
+        )}
         <div className="mt-3 flex gap-2">
           <Link
             className="bg-neutral-200 px-5 py-3 rounded-3xl text-lg text-neutral-700 hover:bg-neutral-300 transition"
             href={`/users/${user?.username}/edit`}
           >
-            Edit Profile
+            프로필 수정
           </Link>
           <LogoutBtn />
         </div>

@@ -24,6 +24,7 @@ async function getTweet(id: number) {
         description: true,
         title: true,
         photo: true,
+        views: true,
         likes: true,
         user: {
           select: {
@@ -101,7 +102,7 @@ export default async function TweetDetail({
         <Image
           className="object-cover"
           fill
-          src={`${tweet.photo}/home`}
+          src={`${tweet.photo}/public`}
           alt={tweet.title}
         />
       </div>
@@ -125,6 +126,7 @@ export default async function TweetDetail({
       <div className="p-5">
         <h1 className="text-2xl font-semibold">{tweet.title}</h1>
         <p>{tweet.description}</p>
+        <p>조회수 {tweet.views}</p>
       </div>
       <div className=" p-5 pb-10 flex justify-between items-center">
         {isOwner ? (
